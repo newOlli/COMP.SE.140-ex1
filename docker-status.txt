@@ -1,0 +1,11 @@
+CONTAINER ID   IMAGE                    COMMAND                  CREATED             STATUS          PORTS                                       NAMES
+bf64febe8462   compse140-ex1-service2   "python service2.py"     17 minutes ago      Up 17 minutes   8080/tcp                                    compse140-ex1-service2-1
+6c89195c0427   compse140-ex1-service1   "docker-entrypoint.s…"   About an hour ago   Up 17 minutes   0.0.0.0:8199->8199/tcp, :::8199->8199/tcp   compse140-ex1-service1-1
+
+
+
+NETWORK ID     NAME                           DRIVER    SCOPE
+ccc3c1022838   bridge                         bridge    local
+0df5003d356a   compse140-ex1_service-bridge   bridge    local
+60b4080eb081   host                           host      local
+782b727d5c53   none                           null      local
