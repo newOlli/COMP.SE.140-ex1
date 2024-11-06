@@ -15,6 +15,7 @@ const app = http.createServer(async (req, res) => {
             
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(responseData));
+            await new Promise(resolve => setTimeout(resolve, 2000));
         } catch (error) {
             console.error('Error handling request:', error);
             res.writeHead(500, { 'Content-Type': 'text/plain' });

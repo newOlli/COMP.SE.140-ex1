@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 4</title>
+    <script>
+        async function requestData() {
+            const response = await fetch('/service1/');
+            const data = await response.json();
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        }
+
+        /*async function stopContainers() {
+            await fetch('/stop', { method: 'POST' });
+            alert("All containers stopped.");
+        }*/
+    </script>
+</head>
+<body>
+    <h1>Service Gateway</h1>
+    <button onclick="requestData()">Request Data</button>
+    <!--<button onclick="stopContainers()">Stop Containers</button>-->
+    <pre id="output"></pre>
+</body>
+</html>
