@@ -1,3 +1,0 @@
-The containers share the diskspace and CPU with the host. The container share filesystem to
-the boundaries set by dockerfiles. The containers also share network through ports
-that are set accessible in the docker-compose file.

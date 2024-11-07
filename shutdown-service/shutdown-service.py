@@ -7,9 +7,8 @@ def shutdown_containers():
     client = docker.from_env()
     containers = client.containers.list()
     
-    # Stop all containers except the shutdown service itself
     for container in containers:
-        if "shutdown-service" not in container.name:  # Exclude shutdown-service container
+        if "shutdown-service" not in container.name: 
             container.stop()
     
     shutdown_service = client.containers.get("shutdown-service")
@@ -18,7 +17,7 @@ def shutdown_containers():
 @app.route('/', methods=['POST'])
 def shutdown():
     try:
-        shutdown_containers()  # Call the shutdown process
+        shutdown_containers()
         return jsonify({"message": "Shutdown initiated"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

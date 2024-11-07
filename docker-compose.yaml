@@ -20,7 +20,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock 
     networks:
       - loadbalancing
-#      - service-bridge
     restart: no
     container_name: shutdown-service
 
