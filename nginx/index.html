@@ -11,16 +11,24 @@
             document.getElementById("output").textContent = JSON.stringify(data, null, 2);
         }
 
-        /*async function stopContainers() {
-            await fetch('/stop', { method: 'POST' });
-            alert("All containers stopped.");
-        }*/
+        async function stopContainers() {
+            try {
+                const response = await fetch('/shutdown/', { method: 'POST' });
+                if (!response.ok) {
+                    throw new Error('Failed to stop Docker containers:',response.json());
+                }
+                const data = await response.json();
+                document.getElementById("output").textContent = data.message; 
+            } catch (error) {
+                document.getElementById("output").textContent = 'Error (can be due to containers being shutdown): ' + error.message;
+            }
+        }
     </script>
 </head>
 <body>
     <h1>Service Gateway</h1>
     <button onclick="requestData()">Request Data</button>
-    <!--<button onclick="stopContainers()">Stop Containers</button>-->
+    <button onclick="stopContainers()">Stop Containers</button>
     <pre id="output"></pre>
 </body>
 </html>

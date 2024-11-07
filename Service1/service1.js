@@ -4,6 +4,7 @@ const execSync = require('child_process').execSync;
 
 const app = http.createServer(async (req, res) => {
     if (req.method === 'GET' && req.url === '/') {
+
         try {
             const service1Info = await getMainServiceInfo();
             const service2Info = await getService2Info();

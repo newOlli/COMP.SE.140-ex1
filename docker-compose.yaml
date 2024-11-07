@@ -14,6 +14,16 @@ services:
     networks:
       - service-bridge
 
+  shutdown-service:
+    build: ./shutdown-service
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
+    networks:
+      - loadbalancing
+#      - service-bridge
+    restart: no
+    container_name: shutdown-service
+
   nginx:
     build: ./nginx
     container_name: nginx
