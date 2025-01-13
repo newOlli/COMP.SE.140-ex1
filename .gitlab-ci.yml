@@ -23,6 +23,7 @@ build:
 
 test:
   stage: test
+  image: node:16  # Use a Node.js image for this stage
   services:
     - docker:dind
   script:
