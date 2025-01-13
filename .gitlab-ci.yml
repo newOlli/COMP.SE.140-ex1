@@ -23,15 +23,15 @@ build:
 
 test:
   stage: test
-  image: node:16  # Use a Node.js image for this stage
   services:
     - docker:dind
   script:
     - echo "Test starting"
+    - apk add --no-cache nodejs npm 
     - docker-compose down || true
     - docker-compose up -d
     - npm install -g mocha node-fetch assert
-    - mocha test/service1.js
+    - mocha test/service1-tests.js
     - docker-compose down
 
 
