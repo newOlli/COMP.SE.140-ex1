@@ -20,7 +20,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock 
     networks:
       - loadbalancing
-    restart: no
+    restart: "no"
     container_name: shutdown-service
 
   nginx:
