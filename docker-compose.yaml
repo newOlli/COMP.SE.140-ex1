@@ -2,7 +2,7 @@ version: '3'
 services:
 
   service1:
-    build: ./service1
+    build: ./Service1
     deploy:
       replicas: 3
     networks:
@@ -10,7 +10,7 @@ services:
       - loadbalancing
 
   service2:
-    build: ./service2
+    build: ./Service2
     networks:
       - service-bridge
 
