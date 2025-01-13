@@ -32,6 +32,7 @@ services:
       - loadbalancing
     depends_on:
       - service1
+      - shutdown-service
 
 networks:
   service-bridge:
