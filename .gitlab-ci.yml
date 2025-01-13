@@ -30,7 +30,7 @@ test:
     - apk add --no-cache nodejs npm 
     - docker-compose down || true
     - docker-compose up -d
-    - npm install -g mocha node-fetch assert
+    - npm install -g mocha assert
     - mocha tests/service1-tests.js
     - docker-compose down
 
