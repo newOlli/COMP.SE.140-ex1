@@ -13,7 +13,7 @@ build:
   stage: build
   script:
     - echo "BUILD PHASE INITIATED"
-    - docker-compose build
+    - docker-compose up -d
     - echo "BUILD SUCCESSFUL"
 
 
