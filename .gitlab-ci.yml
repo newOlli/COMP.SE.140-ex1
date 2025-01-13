@@ -27,6 +27,7 @@ test:
     - docker:dind
   script:
     - echo "Test starting"
+    - docker-compose down || true
     - docker-compose up -d
     - npm install -g mocha node-fetch assert
     - mocha test/service1.js
