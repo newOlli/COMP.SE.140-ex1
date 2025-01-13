@@ -5,7 +5,8 @@ stages:
   - deploy
   
 services:
-    - docker:dind
+  - name: docker:dind
+    alias: docker
 
 variables:
   DOCKER_DRIVER: overlay2
