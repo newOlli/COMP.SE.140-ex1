@@ -1,0 +1,11 @@
+{
+    "name": "apigateway",
+    "version": "1.0.0",
+    "description": "",
+    "main": "apigateway.js",
+    "dependencies": {
+        
+    },
+    "author": "",
+    "license": "ISC"
+  }

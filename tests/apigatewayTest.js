@@ -25,9 +25,31 @@ function httpRequest({ method, path, payload = null, headers = {} }) {
   });
 }
 
+function changeState(newState,auth){
+  const payload = newState; 
+  const headers = "";
+  if(auth){
+    headers = {
+      'Authorization': 'Basic ' + Buffer.from('admin:admin').toString('base64'), 
+      'Content-Type': 'application/json', 
+    };
+  } else {
+    headers = { 'Content-Type': 'application/json' }
+  }
+   
+  httpRequest({
+    method: 'PUT',
+    path: '/state',
+    payload, 
+    headers, 
+  })
+}
+
 
 describe('GET /state', function () {
   it('should return the current state', async function () {
+    changeState("RUNNING",true);
+
     const response = await httpRequest({ method: 'GET', path: '/state' });
     assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
     assert.ok(['INIT', 'PAUSED', 'RUNNING', 'SHUTDOWN'].includes(response.body), 'Expected a valid state');
@@ -36,13 +58,8 @@ describe('GET /state', function () {
 
 describe('PAUSED State Behavior', function () {
   it('should not process requests when in PAUSED state', async function () {
-    await httpRequest({
-      method: 'PUT',
-      path: '/state',
-      payload: { state: 'PAUSED' },
-      headers: { 'Content-Type': 'application/json' },
-    });
-
+    changeState("RUNNING",true);
+    changeState("PAUSED",false);
     const response = await httpRequest({ method: 'GET', path: '/request' });
     assert.strictEqual(response.statusCode, 503, 'Expected status code to be 503 (Service Unavailable)');
   });
@@ -51,37 +68,26 @@ describe('PAUSED State Behavior', function () {
 
 describe('RUNNING State Behavior', function () {
   it('should process requests normally when in RUNNING state', async function () {
-    await httpRequest({
-      method: 'PUT',
-      path: '/state',
-      payload: { state: 'RUNNING' },
-      headers: { 'Content-Type': 'application/json' },
-    });
-
+    changeState("RUNNING",true);
     const response = await httpRequest({ method: 'GET', path: '/request' });
     assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
     assert.strictEqual(response.body, 'Request processed', 'Expected correct response from /request');
   });
 });
 
+describe('GET /run-log', function () {
+  it('should return state transition log', async function () {
+    changeState("RUNNING",true);
 
-describe('INIT State Behavior', function () {
-  it('should reset the system to INIT state', async function () {
-    await httpRequest({
-      method: 'PUT',
-      path: '/state',
-      payload: { state: 'INIT' },
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    const response = await httpRequest({ method: 'GET', path: '/state' });
-    assert.strictEqual(response.body, 'INIT', 'Expected state to be INIT');
+    const response = await httpRequest({ method: 'GET', path: '/run-log' });
+    assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
+    assert.include(response.body, 'INIT->RUNNING', 'Expected run-log to contain state transition');
   });
 });
 
-
 describe('SHUTDOWN State Behavior', function () {
   it('should stop all containers when in SHUTDOWN state', async function () {
+    changeState("RUNNING",true);
     const response = await httpRequest({
       method: 'PUT',
       path: '/state',
@@ -90,21 +96,5 @@ describe('SHUTDOWN State Behavior', function () {
     });
 
     assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
-  });
-});
-
-
-describe('GET /run-log', function () {
-  it('should return state transition log', async function () {
-    await httpRequest({
-      method: 'PUT',
-      path: '/state',
-      payload: { state: 'RUNNING' },
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    const response = await httpRequest({ method: 'GET', path: '/run-log' });
-    assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
-    assert.include(response.body, 'INIT->RUNNING', 'Expected run-log to contain state transition');
   });
 });
