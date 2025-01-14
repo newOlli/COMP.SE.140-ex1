@@ -33,6 +33,14 @@ services:
     depends_on:
       - service1
       - shutdown-service
+  apigateway:
+    build: ./apigateway
+    ports:
+      - "8197:8197"
+    depends_on:
+      - service1
+    networks:
+      - loadbalancing
 
 networks:
   service-bridge:

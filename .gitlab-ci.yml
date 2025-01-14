@@ -31,7 +31,7 @@ test:
     - docker-compose down || true
     - docker-compose up -d
     - npm install -g mocha assert
-    - mocha tests/service1-tests.js
+    - mocha tests/apigatewayTest.js
     - docker-compose down
 
 
