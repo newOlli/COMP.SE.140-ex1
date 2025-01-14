@@ -1,16 +1,16 @@
 const assert = require('assert');
 const http = require('http');
-const auth = 'Basic ' + Buffer.from('admin:admin').toString('base64'); // Basic auth for username:admin and password:admin
+const auth = 'Basic ' + Buffer.from('admin:admin').toString('base64'); 
 
 describe('NGINX API Gateway with Basic Authentication', function () {
   it('should proxy to Service1 and return service1 info after authenticating', function (done) {
     const options = {
-      hostname: 'localhost',
+      hostname: 'nginx',
       port: 8198,
       path: '/service1/',
       method: 'GET',
       headers: {
-        'Authorization': auth, // Add Authorization header with Basic Auth
+        'Authorization': auth,
       },
     };
 
@@ -29,7 +29,7 @@ describe('NGINX API Gateway with Basic Authentication', function () {
           assert.ok(parsedData.service2, 'Expected service2 key in response');
           done();
         } catch (e) {
-          done(e); // Pass the error if JSON parsing fails
+          done(e); 
         }
       });
     });
