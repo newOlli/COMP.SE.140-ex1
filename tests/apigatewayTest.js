@@ -7,7 +7,7 @@ function httpRequest({ method, path, payload = null, headers = {} }) {
     const options = {
       method,
       hostname: 'localhost',
-      port: 8198,
+      port: 8197,
       path,
       headers,
     };
@@ -27,7 +27,7 @@ function httpRequest({ method, path, payload = null, headers = {} }) {
 
 function changeState(newState,auth){
   const payload = newState; 
-  const headers = "";
+  let headers = "";
   if(auth){
     headers = {
       'Authorization': 'Basic ' + Buffer.from('admin:admin').toString('base64'), 
@@ -37,7 +37,7 @@ function changeState(newState,auth){
     headers = { 'Content-Type': 'application/json' }
   }
    
-  httpRequest({
+  return httpRequest({
     method: 'PUT',
     path: '/state',
     payload, 
@@ -47,8 +47,9 @@ function changeState(newState,auth){
 
 
 describe('GET /state', function () {
+  this.timeout(5000);
   it('should return the current state', async function () {
-    changeState("RUNNING",true);
+    await changeState("RUNNING",true);
 
     const response = await httpRequest({ method: 'GET', path: '/state' });
     assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
@@ -56,19 +57,49 @@ describe('GET /state', function () {
   });
 });
 
-describe('PAUSED State Behavior', function () {
-  it('should not process requests when in PAUSED state', async function () {
-    changeState("RUNNING",true);
-    changeState("PAUSED",false);
+describe('PAUSED State Behavior with GET /state', function () {
+  this.timeout(5000);
+  it('should not process requests when in PAUSED state (GET /state)', async function () {
+
+    await changeState("RUNNING",true);
+
+    await changeState("PAUSED",false);
+
+    const response = await httpRequest({ method: 'GET', path: '/state' });
+
+    assert.strictEqual(response.statusCode, 503, 'Expected status code to be 503');
+  });
+});
+
+describe('INIT State Behavior with GET /state', function () {
+  this.timeout(5000);
+  it('should not process requests when in PAUSED state (GET /state)', async function () {
+    await changeState("INIT",true);
+    const response = await httpRequest({ method: 'GET', path: '/state' });
+
+    assert.strictEqual(response.statusCode, 503, 'Expected status code to be 503');
+  });
+});
+
+describe('PAUSED State Behavior with GET /request', function () {
+  this.timeout(5000);
+  it('should not process requests when in PAUSED state (GET /request)', async function () {
+
+    await changeState("RUNNING",true);
+
+    await changeState("PAUSED",false);
+
     const response = await httpRequest({ method: 'GET', path: '/request' });
-    assert.strictEqual(response.statusCode, 503, 'Expected status code to be 503 (Service Unavailable)');
+
+    assert.strictEqual(response.statusCode, 503, 'Expected status code to be 503');
   });
 });
 
 
 describe('RUNNING State Behavior', function () {
+  this.timeout(5000);
   it('should process requests normally when in RUNNING state', async function () {
-    changeState("RUNNING",true);
+    await changeState("RUNNING",true);
     const response = await httpRequest({ method: 'GET', path: '/request' });
     assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
     assert.strictEqual(response.body, 'Request processed', 'Expected correct response from /request');
@@ -76,8 +107,9 @@ describe('RUNNING State Behavior', function () {
 });
 
 describe('GET /run-log', function () {
+  this.timeout(5000);
   it('should return state transition log', async function () {
-    changeState("RUNNING",true);
+    await changeState("RUNNING",true);
 
     const response = await httpRequest({ method: 'GET', path: '/run-log' });
     assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
@@ -86,8 +118,9 @@ describe('GET /run-log', function () {
 });
 
 describe('SHUTDOWN State Behavior', function () {
+  this.timeout(5000);
   it('should stop all containers when in SHUTDOWN state', async function () {
-    changeState("RUNNING",true);
+    await changeState("RUNNING",true);
     const response = await httpRequest({
       method: 'PUT',
       path: '/state',

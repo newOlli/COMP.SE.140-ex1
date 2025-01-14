@@ -4,8 +4,9 @@
     "description": "",
     "main": "apigateway.js",
     "dependencies": {
-        
+      "node-fetch": "^2.6.7",
+      "basic-auth": "^2.0.1"
     },
     "author": "",
     "license": "ISC"
-  }
+}
