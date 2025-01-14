@@ -29,7 +29,7 @@ test:
     - echo "Test starting"
     - apk add --no-cache nodejs npm 
     - docker-compose down || true
-    - docker-compose up -d
+    - docker-compose up --build -d
     - npm install -g mocha assert
     - mocha tests/apigatewayTest.js
     - docker-compose down
