@@ -101,7 +101,10 @@ const handleStateChange = (req, res) => {
   }
 };
 
-
+const handleRunLog = (req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end(stateHistory.toString());
+};
 
 const server = http.createServer((req, res) => {
   //AUTHENTICATION HANDLAUS INIT TILASSA
@@ -115,7 +118,13 @@ const server = http.createServer((req, res) => {
   if (req.url === '/state') {
     handleStateChange(req, res);
   } else if (req.url === '/run-log') {
-    //TODO
+
+    if(!checkValidState(req,res)){
+      return;
+    }
+
+    handleRunLog(req, res);
+
   } else if (req.url.startsWith('/request')) {
     //TODO
   } else {

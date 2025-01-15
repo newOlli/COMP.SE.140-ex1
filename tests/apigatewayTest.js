@@ -113,7 +113,7 @@ describe('GET /run-log', function () {
 
     const response = await httpRequest({ method: 'GET', path: '/run-log' });
     assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
-    assert.include(response.body, 'INIT->RUNNING', 'Expected run-log to contain state transition');
+    assert.ok(response.body.includes('INIT->RUNNING'), 'Expected run-log to contain state transition');
   });
 });
 
