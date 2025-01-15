@@ -15,6 +15,14 @@ const checkValidState = (req,res) => {
  return true;
 }
 
+const authenticate = (req) => {
+  const credentials = auth(req);
+  if (!credentials || credentials.name !== 'admin' || credentials.pass !== 'admin') {
+    return false;
+  }
+  return true;
+};
+
 const handleStateChange = (req, res) => {
   
 
@@ -96,6 +104,14 @@ const handleStateChange = (req, res) => {
 
 
 const server = http.createServer((req, res) => {
+  //AUTHENTICATION HANDLAUS INIT TILASSA
+  if(currentState ==="INIT"){
+    if (!authenticate(req)) {
+      res.writeHead(401, { 'Content-Type': 'text/plain' });
+      return res.end('Unauthorized');
+    }
+  }
+
   if (req.url === '/state') {
     handleStateChange(req, res);
   } else if (req.url === '/run-log') {
