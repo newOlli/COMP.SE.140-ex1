@@ -26,8 +26,7 @@ test:
   script:
     - docker-compose down || true
     - docker-compose up --build -d
-    - docker-compose run tests npm test 
-    - docker wait test-runner    
+    - docker-compose run tests npm test   
     - docker-compose down
 
 
