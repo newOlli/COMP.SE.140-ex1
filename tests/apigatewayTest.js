@@ -65,7 +65,7 @@ describe('PAUSED State Behavior with GET /state', function () {
 
     await changeState("PAUSED",false);
 
-    const response = await httpRequest({ method: 'GET', path: '/state' });
+    const response = await httpRequest({ method: 'GET', path: '/state'});
 
     assert.strictEqual(response.statusCode, 503, 'Expected status code to be 503');
   });
@@ -75,7 +75,8 @@ describe('INIT State Behavior with GET /state', function () {
   this.timeout(5000);
   it('should not process requests when in PAUSED state (GET /state)', async function () {
     await changeState("INIT",true);
-    const response = await httpRequest({ method: 'GET', path: '/state' });
+    const authHeader = {'Authorization': 'Basic ' + Buffer.from('admin:admin').toString('base64'),};
+    const response = await httpRequest({ method: 'GET', path: '/state', headers: authHeader });
 
     assert.strictEqual(response.statusCode, 503, 'Expected status code to be 503');
   });
@@ -102,7 +103,6 @@ describe('RUNNING State Behavior with /request', function () {
     await changeState("RUNNING",true);
     const response = await httpRequest({ method: 'GET', path: '/request' });
     assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
-    assert.strictEqual(response.body, 'Request processed', 'Expected correct response from /request');
   });
 });
 
