@@ -6,7 +6,7 @@ function httpRequest({ method, path, payload = null, headers = {} }) {
   return new Promise((resolve, reject) => {
     const options = {
       method,
-      hostname: 'localhost',
+      hostname: 'apigateway',
       port: 8197,
       path,
       headers,

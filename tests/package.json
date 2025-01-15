@@ -1,0 +1,16 @@
+{
+    "name": "apigatewayTest",
+    "version": "1.0.0",
+    "description": "Testfor API Gateway",
+    "main": "apigatewayTest.js",
+    "scripts": {
+      "test": "mocha apigatewayTest.js --exit"
+    },
+    "dependencies": {
+      "mocha": "^10.0.0",
+      "assert": "^2.0.0"
+    },
+    "author": "",
+    "license": ""
+  }
+  

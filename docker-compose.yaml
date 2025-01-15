@@ -41,6 +41,14 @@ services:
       - service1
     networks:
       - loadbalancing
+  tests:
+    build: ./tests
+    container_name: tests
+    networks:
+      - loadbalancing
+    depends_on:
+      - nginx
+
 
 networks:
   service-bridge:

@@ -23,15 +23,11 @@ build:
 
 test:
   stage: test
-  services:
-    - docker:dind
   script:
-    - echo "Test starting"
-    - apk add --no-cache nodejs npm 
     - docker-compose down || true
     - docker-compose up --build -d
-    - npm install -g mocha assert
-    - mocha tests/apigatewayTest.js
+    - docker-compose run tests npm test 
+    - docker wait test-runner    
     - docker-compose down
 
 
