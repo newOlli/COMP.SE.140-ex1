@@ -96,7 +96,7 @@ describe('PAUSED State Behavior with GET /request', function () {
 });
 
 
-describe('RUNNING State Behavior', function () {
+describe('RUNNING State Behavior with /request', function () {
   this.timeout(5000);
   it('should process requests normally when in RUNNING state', async function () {
     await changeState("RUNNING",true);
@@ -117,7 +117,7 @@ describe('GET /run-log', function () {
   });
 });
 
-describe('SHUTDOWN State Behavior', function () {
+describe('SHUTDOWN State Behavior when state RUNNING', function () {
   this.timeout(5000);
   it('should stop all containers when in SHUTDOWN state', async function () {
     await changeState("RUNNING",true);
