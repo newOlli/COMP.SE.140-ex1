@@ -106,6 +106,25 @@ const handleRunLog = (req, res) => {
   res.end(stateHistory.toString());
 };
 
+const requestInfo = (req, res) => {
+  if (currentState === 'PAUSED') {
+    return res.writeHead(503).end('Service is paused');
+  }
+
+  const service1Url = 'http://service1:8199/';
+
+  fetch(service1Url, { method: req.method })
+    .then(response => {
+      res.statusCode = response.status;
+      response.body.pipe(res);
+    })
+    .catch(err => {
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Internal Server Error');
+    });
+};
+
+
 const server = http.createServer((req, res) => {
   //AUTHENTICATION HANDLAUS INIT TILASSA
   if(currentState ==="INIT"){
@@ -126,7 +145,13 @@ const server = http.createServer((req, res) => {
     handleRunLog(req, res);
 
   } else if (req.url.startsWith('/request')) {
-    //TODO
+
+    if(!checkValidState(req,res)){
+      return;
+    }
+
+    requestInfo(req, res);
+
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not Found');

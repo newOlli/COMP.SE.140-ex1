@@ -124,7 +124,7 @@ describe('SHUTDOWN State Behavior when state RUNNING', function () {
     const response = await httpRequest({
       method: 'PUT',
       path: '/state',
-      payload: { state: 'SHUTDOWN' },
+      payload: "SHUTDOWN",
       headers: { 'Content-Type': 'application/json' },
     });
 
