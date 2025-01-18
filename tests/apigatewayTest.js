@@ -117,6 +117,16 @@ describe('GET /run-log', function () {
   });
 });
 
+describe('GET /monitor', function () {
+  this.timeout(5000);
+  it('should return monitor logs', async function () {
+
+    const response = await httpRequest({ method: 'GET', path: '/monitor' });
+    assert.strictEqual(response.statusCode, 200, 'Expected status code to be 200');
+    assert.ok(response.body.includes('requestCount'), 'Expected monitor information');
+  });
+});
+
 describe('SHUTDOWN State Behavior when state RUNNING', function () {
   this.timeout(5000);
   it('should stop all containers when in SHUTDOWN state', async function () {
