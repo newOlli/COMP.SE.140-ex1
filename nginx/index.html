@@ -23,12 +23,27 @@
                 document.getElementById("output").textContent = 'Error (can be due to containers being shutdown): ' + error.message;
             }
         }
+        async function showLogs() {
+            try {
+                const response = await fetch('/monitor/');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch logs');
+                }
+                const logs = await response.json();
+                document.getElementById("logs").textContent = JSON.stringify(logs, null, 2);
+            } catch (error) {
+                document.getElementById("logs").textContent = 'Error fetching logs: ' + error.message;
+            }
+        }
     </script>
 </head>
 <body>
     <h1>Service Gateway</h1>
     <button onclick="requestData()">Request Data</button>
     <button onclick="stopContainers()">Stop Containers</button>
+    <button onclick="showLogs()">Show Logs</button>
     <pre id="output"></pre>
+    <h2>Request Logs:</h2>
+    <pre id="logs"></pre>
 </body>
 </html>

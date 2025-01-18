@@ -2,6 +2,31 @@ const http = require('http');
 const fetch = require('node-fetch');
 const auth = require('basic-auth');
 
+//Logging:
+
+const startTime = new Date();
+let requestCount = 0;
+const requestLogs = [];
+
+const logRequest = (req, res, next) => {
+  const logEntry = {
+    method: req.method,
+    url: req.url,
+    timestamp: new Date().toISOString(),
+  };
+  requestLogs.push(logEntry);
+
+  if (requestLogs.length > 25) {
+    requestLogs.shift();
+  }
+
+  requestCount++;
+
+  next();
+};
+
+//Actual api:
+
 let currentState = 'INIT';
 const validStates = ['INIT', 'PAUSED', 'RUNNING', 'SHUTDOWN'];
 const stateHistory = []; 
@@ -126,36 +151,50 @@ const requestInfo = (req, res) => {
 
 
 const server = http.createServer((req, res) => {
-  //AUTHENTICATION HANDLAUS INIT TILASSA
-  if(currentState ==="INIT"){
-    if (!authenticate(req)) {
-      res.writeHead(401, { 'Content-Type': 'text/plain' });
-      return res.end('Unauthorized');
-    }
-  }
+  //Logging:
+  logRequest(req, res, () => {});
 
-  if (req.url === '/state') {
-    handleStateChange(req, res);
-  } else if (req.url === '/run-log') {
-
-    if(!checkValidState(req,res)){
-      return;
-    }
-
-    handleRunLog(req, res);
-
-  } else if (req.url.startsWith('/request')) {
-
-    if(!checkValidState(req,res)){
-      return;
-    }
-
-    requestInfo(req, res);
-
+  if (req.method === 'GET' && req.url === '/monitor') {
+    const monitoringData = {
+      serviceStartTime: startTime.toISOString(),
+      requestCount: requestCount,
+      logs: requestLogs,
+    };
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(monitoringData));
   } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Not Found');
+    //AUTHENTICATION HANDLAUS INIT TILASSA
+    if(currentState ==="INIT"){
+      if (!authenticate(req)) {
+        res.writeHead(401, { 'Content-Type': 'text/plain' });
+        return res.end('Unauthorized');
+      }
+    }
+
+    if (req.url === '/state') {
+      handleStateChange(req, res);
+    } else if (req.url === '/run-log') {
+
+      if(!checkValidState(req,res)){
+        return;
+      }
+
+      handleRunLog(req, res);
+
+    } else if (req.url.startsWith('/request')) {
+
+      if(!checkValidState(req,res)){
+        return;
+      }
+
+      requestInfo(req, res);
+
+    } else {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('Not Found');
+    }
   }
+  
 });
 
 const PORT = 8197;
